@@ -1,40 +1,133 @@
 #include <stdio.h>
+#include <stdlib.h> // Incluído para usar a função abs
 
-// Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+// Tamanho do tabuleiro
+#define TAMANHO_TABULEIRO 10
+
+// Tamanho dos navios
+#define TAMANHO_NAVIO 3
+
+// Tamanho das matrizes de habilidade
+#define TAMANHO_HABILIDADE 5
+
+// Valores para representar elementos no tabuleiro
+#define AGUA 0
+#define NAVIO 3
+#define AREA_AFETADA 5
+
+// Função para inicializar o tabuleiro com 0s (água)
+void inicializarTabuleiro(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro[i][j] = AGUA;
+        }
+    }
+}
+
+// Função para exibir o tabuleiro
+void exibirTabuleiro(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
+    printf("Tabuleiro:\n");
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Função para criar a matriz de habilidade em forma de Cone
+void criarMatrizCone(int matriz[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE]) {
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            if (j >= i && j < TAMANHO_HABILIDADE - i) {
+                matriz[i][j] = 1; // Área afetada
+            } else {
+                matriz[i][j] = 0; // Área não afetada
+            }
+        }
+    }
+}
+
+// Função para criar a matriz de habilidade em forma de Cruz
+void criarMatrizCruz(int matriz[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE]) {
+    int centro = TAMANHO_HABILIDADE / 2; // Centro da matriz
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            if (i == centro || j == centro) {
+                matriz[i][j] = 1; // Área afetada
+            } else {
+                matriz[i][j] = 0; // Área não afetada
+            }
+        }
+    }
+}
+
+// Função para criar a matriz de habilidade em forma de Octaedro
+void criarMatrizOctaedro(int matriz[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE]) {
+    int centro = TAMANHO_HABILIDADE / 2; // Centro da matriz
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            if (abs(i - centro) + abs(j - centro) <= centro) {
+                matriz[i][j] = 1; // Área afetada
+            } else {
+                matriz[i][j] = 0; // Área não afetada
+            }
+        }
+    }
+}
+
+// Função para aplicar uma habilidade ao tabuleiro
+void aplicarHabilidade(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int habilidade[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE], int linha, int coluna) {
+    int centro = TAMANHO_HABILIDADE / 2; // Centro da matriz de habilidade
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            int linha_tabuleiro = linha + (i - centro);
+            int coluna_tabuleiro = coluna + (j - centro);
+
+            // Verifica se a posição está dentro dos limites do tabuleiro
+            if (linha_tabuleiro >= 0 && linha_tabuleiro < TAMANHO_TABULEIRO &&
+                coluna_tabuleiro >= 0 && coluna_tabuleiro < TAMANHO_TABULEIRO) {
+                if (habilidade[i][j] == 1) {
+                    tabuleiro[linha_tabuleiro][coluna_tabuleiro] = AREA_AFETADA;
+                }
+            }
+        }
+    }
+}
 
 int main() {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
+    // Declaração do tabuleiro
+    int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+    // Inicializa o tabuleiro com 0s (água)
+    inicializarTabuleiro(tabuleiro);
 
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+    // Posiciona um navio horizontalmente
+    tabuleiro[2][3] = NAVIO;
+    tabuleiro[2][4] = NAVIO;
+    tabuleiro[2][5] = NAVIO;
 
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
+    // Posiciona um navio verticalmente
+    tabuleiro[5][7] = NAVIO;
+    tabuleiro[6][7] = NAVIO;
+    tabuleiro[7][7] = NAVIO;
 
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+    // Cria as matrizes de habilidade
+    int cone[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE];
+    int cruz[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE];
+    int octaedro[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE];
+
+    criarMatrizCone(cone);
+    criarMatrizCruz(cruz);
+    criarMatrizOctaedro(octaedro);
+
+    // Aplica as habilidades ao tabuleiro
+    aplicarHabilidade(tabuleiro, cone, 1, 1);      // Cone na posição (1, 1)
+    aplicarHabilidade(tabuleiro, cruz, 4, 4);      // Cruz na posição (4, 4)
+    aplicarHabilidade(tabuleiro, octaedro, 7, 7);  // Octaedro na posição (7, 7)
+
+    // Exibe o tabuleiro com os navios e as áreas de efeito das habilidades
+    exibirTabuleiro(tabuleiro);
 
     return 0;
 }
